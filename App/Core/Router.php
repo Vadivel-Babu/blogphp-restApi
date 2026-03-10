@@ -2,21 +2,32 @@
 
 namespace App\Core;
 
-// use App\Controllers\UserController;
 use App\Helpers\Response;
 
 class Router
 {
     private array $routes = [];
 
-    public function get(string $uri, string $action)
+    public function get(string $uri, string $action, array $middleware)
     {
-        $this->addRoute('GET', $uri, $action);
+        $this->addRoute('GET', $uri, $action, $middleware);
     }
 
-    private function addRoute(string $method, string $uri, string $action)
+    private function addRoute(string $method, string $uri, string $action, array $middleware = [])
     {
-        $this->routes[] = compact('method', 'uri', 'action');
+        $this->routes[] = compact('method', 'uri', 'action', 'middleware');
+    }
+
+    private function runMiddleware($middlewares)
+    {
+        foreach ($middlewares as $middleware) {
+            $class = 'App\\Middleware\\'.ucfirst($middleware).'Middleware';
+            if (! class_exists($class)) {
+                throw new \Exception("Controller not found: $class");
+            }
+            $middleware = new $class();
+            $middleware->auth();
+        }
     }
 
     public function dispatch()
@@ -33,6 +44,8 @@ class Router
                 preg_match($pattern, $requestUri, $matches)
             ) {
                 array_shift($matches);  // remove full match
+
+                $this->runMiddleware($route['middleware']);
 
                 return $this->callAction($route['action'], $matches);
             }
