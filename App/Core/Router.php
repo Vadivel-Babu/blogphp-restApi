@@ -3,6 +3,8 @@
 namespace App\Core;
 
 use App\Helpers\Response;
+use Exception;
+use Throwable;
 
 class Router
 {
@@ -22,11 +24,16 @@ class Router
     {
         foreach ($middlewares as $middleware) {
             $class = 'App\\Middleware\\'.ucfirst($middleware).'Middleware';
-            if (! class_exists($class)) {
-                throw new \Exception("Controller not found: $class");
+            try {
+                if (! class_exists($class)) {
+                    Response::json(['message' => 'class not found']);
+                    // throw new \Exception("Controller not found: $class");
+                }
+                $middleware = new $class();
+                $middleware->auth();
+            } catch (Throwable $e) {
+                Response::json(['message' => $e->getMessage()]);
             }
-            $middleware = new $class();
-            $middleware->auth();
         }
     }
 
