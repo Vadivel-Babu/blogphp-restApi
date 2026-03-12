@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Helpers\Response;
+use App\Models\Post;
 
 class PostController
 {
-    public function getAllPosts()
+    public function index()
     {
-        Response::json(['message' => 'all post fetched']);
+        $posts = Post::all();
+        Response::json($posts);
     }
 }

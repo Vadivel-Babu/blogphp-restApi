@@ -15,6 +15,11 @@ class Router
         $this->addRoute('GET', $uri, $action, $middleware);
     }
 
+    public function post(string $uri, string $action, array $middleware)
+    {
+        $this->addRoute('POST', $uri, $action, $middleware);
+    }
+
     private function addRoute(string $method, string $uri, string $action, array $middleware = [])
     {
         $this->routes[] = compact('method', 'uri', 'action', 'middleware');
