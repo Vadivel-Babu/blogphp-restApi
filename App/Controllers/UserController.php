@@ -23,9 +23,9 @@ class UserController
     {
         $data = json_decode(file_get_contents('php://input'), true);
 
-        // $id = User::create($data);
+        $id = User::create($data);
 
-        Response::json([$data], 201);
+        Response::json([$id], 201);
     }
 
     // public function destroy($id)

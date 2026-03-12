@@ -5,8 +5,16 @@ require 'App/autoload.php';
 use App\Core\Router;
 
 $route = new Router();
+
+// user routes
 $route->get('/users', 'UserController@index', ['auth']);
 $route->get('/users/{id}', 'UserController@show', ['auth']);
-$route->get('/posts', 'PostController@index', ['auth']);
 $route->post('/users', 'UserController@store', ['auth']);
+
+// post routes
+$route->get('/posts', 'PostController@index', ['auth']);
+$route->get('/posts/{id}', 'PostController@show', ['auth']);
+$route->post('/posts', 'PostController@store', ['auth']);
+$route->put('/posts/{id}', 'PostController@update', ['auth']);
+$route->delete('/posts/{id}', 'PostController@delete', ['auth']);
 $route->dispatch();
