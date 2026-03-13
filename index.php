@@ -6,15 +6,19 @@ use App\Core\Router;
 
 $route = new Router();
 
-// user routes
+// users routes
 $route->get('/users', 'UserController@index', ['auth']);
 $route->get('/users/{id}', 'UserController@show', ['auth']);
 $route->post('/users', 'UserController@store', ['auth']);
 
-// post routes
+// posts routes
 $route->get('/posts', 'PostController@index', ['auth']);
 $route->get('/posts/{id}', 'PostController@show', ['auth']);
 $route->post('/posts', 'PostController@store', ['auth']);
 $route->put('/posts/{id}', 'PostController@update', ['auth']);
 $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
+
+// comments routes
+$route->get('/comments', 'CommentController@index', ['auth']);
+
 $route->dispatch();

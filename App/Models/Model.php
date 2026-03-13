@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use App\Core\Database;
-use App\Helpers\Response;
-// use WpOrg\Requests\Response;
+use WpOrg\Requests\Response;
 use PDO;
 
 class Model
@@ -70,7 +69,8 @@ class Model
         $stmt = self::db()->prepare($sql);
 
         $result = $stmt->execute($data);
-        Response::json($result);
+
+        return $result;
     }
 
     public static function delete($id)
