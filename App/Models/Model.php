@@ -15,6 +15,16 @@ class Model
         return Database::connect();
     }
 
+    public static function register()
+    {
+        return ['message' => 'user registered succesfully'];
+    }
+
+    public static function login()
+    {
+        return ['message' => 'user login succesfully'];
+    }
+
     public static function all()
     {
         $table = static::$table;
