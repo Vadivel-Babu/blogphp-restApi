@@ -15,16 +15,6 @@ class Model
         return Database::connect();
     }
 
-    public static function register()
-    {
-        return ['message' => 'user registered succesfully'];
-    }
-
-    public static function login()
-    {
-        return ['message' => 'user login succesfully'];
-    }
-
     public static function all()
     {
         $table = static::$table;
@@ -42,6 +32,18 @@ class Model
 
         $stmt = self::db()->prepare("SELECT * FROM $table WHERE id = :id");
         $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public static function findByEmail($email)
+    {
+        $table = static::$table;
+
+        $stmt = self::db()->prepare("SELECT * FROM $table WHERE email = :email");
+        $stmt->bindParam(':email', $email);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

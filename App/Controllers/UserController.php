@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Helpers\Response;
+use App\Helpers\Validate;
 use App\Models\User;
 
 class UserController
@@ -19,19 +20,51 @@ class UserController
         Response::json($user);
     }
 
-    public function store()
+    public function register()
     {
         $data = json_decode(file_get_contents('php://input'), true);
 
-        $id = User::create($data);
-
-        Response::json([$id], 201);
+        $isValidate = Validate::validation($data, 'register');
+        if (! $isValidate['status']) {
+            Response::json($isValidate);
+        } else {
+            $password = password_hash($data['password'], PASSWORD_DEFAULT);
+            $data['password'] = $password;
+            $user = User::findByEmail($data['email']);
+            if (! $user) {
+                $newUser = User::create($data);
+                if ($newUser) {
+                    Response::json(['message' => 'register succesfully'], 201);
+                }
+            } else {
+                Response::json(['message' => 'user email already existed'], 400);
+            }
+        }
     }
 
-    // public function destroy($id)
-    // {
-    //     User::delete($id);
+    public function login()
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $isValidate = Validate::validation($data, 'login');
+        if (! $isValidate['status']) {
+            Response::json($isValidate);
+        } else {
+            $user = User::findByEmail($data['email']);
 
-    //     Response::json(['message' => 'Deleted']);
-    // }
+            if (! $user) {
+                Response::json(['message' => 'user not found'], 404);
+            } else {
+                if (password_verify($data['password'], $user['password'])) {
+                    Response::json(['message' => 'logged in succesfully']);
+                } else {
+                    Response::json(['message' => 'invalid password'], 401);
+                }
+            }
+        }
+    }
+
+    public function logout()
+    {
+        Response::json(['message' => 'auth controller logout']);
+    }
 }

@@ -9,7 +9,6 @@ $route = new Router();
 // users routes
 $route->get('/users', 'UserController@index', ['auth']);
 $route->get('/users/{id}', 'UserController@show', ['auth']);
-$route->post('/users', 'UserController@store', ['auth']);
 
 // posts routes
 $route->get('/posts', 'PostController@index', ['auth']);
@@ -21,4 +20,7 @@ $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
 // comments routes
 $route->get('/comments', 'CommentController@index', ['auth']);
 
+// auth routes
+$route->post('/register', 'UserController@register', ['auth']);
+$route->post('/login', 'UserController@login', ['auth']);
 $route->dispatch();
