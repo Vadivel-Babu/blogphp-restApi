@@ -4,9 +4,9 @@ namespace App\Helpers;
 
 class Validate
 {
-    public static function validation($data, $authType)
+    public static function validation($data, $validateType)
     {
-        if ($authType === 'register') {
+        if ($validateType === 'register') {
             $name = $data['name'];
             $email = $data['email'];
             $password = $data['password'];
@@ -19,7 +19,7 @@ class Validate
             }
 
             return ['status' => true];
-        } elseif ($authType === 'login') {
+        } elseif ($validateType === 'login') {
             $email = $data['email'];
             $password = $data['password'];
 
@@ -31,6 +31,8 @@ class Validate
             }
 
             return ['status' => true];
+        } elseif ($validateType === 'user update') {
+            $img = $data;
         }
     }
 }

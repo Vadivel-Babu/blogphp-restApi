@@ -63,6 +63,17 @@ class UserController
         }
     }
 
+    public function update()
+    {
+        $data = file_get_contents('php://input');
+        $name = $_POST['name'];
+        $pass = $_POST['password'];
+        $img = $_FILES['img'];
+        $data = ['name' => $name, '$pass' => "$pass", 'img' => $img];
+        $isValidate = Validate::validation($img, 'user update');
+        Response::json($data, 200);
+    }
+
     public function logout()
     {
         Response::json(['message' => 'auth controller logout']);

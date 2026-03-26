@@ -20,7 +20,8 @@ $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
 // comments routes
 $route->get('/comments', 'CommentController@index', ['auth']);
 
-// auth routes
+// user routes
 $route->post('/register', 'UserController@register', ['auth']);
 $route->post('/login', 'UserController@login', ['auth']);
+$route->post('/update', 'UserController@update', ['auth']);
 $route->dispatch();
