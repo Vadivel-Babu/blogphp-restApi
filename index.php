@@ -19,6 +19,7 @@ $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
 
 // comments routes
 $route->get('/comments', 'CommentController@index', ['auth']);
+$route->post('/comments', 'CommentContoller@store', ['auth']);
 
 // user routes
 $route->post('/register', 'UserController@register', ['auth']);

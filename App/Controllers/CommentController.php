@@ -12,4 +12,9 @@ class CommentController
         $data = Comment::all();
         Response::json(['message' => 'get all comments']);
     }
+
+    public function store()
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+    }
 }
