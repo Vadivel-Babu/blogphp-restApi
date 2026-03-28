@@ -13,6 +13,13 @@ class PostController
         Response::json($posts);
     }
 
+    public function show($id)
+    {
+        $id = $id + 0;
+        $post = Post::find($id);
+        Response::json($post);
+    }
+
     public function store()
     {
         $data = json_decode(file_get_contents('php://input'), true);

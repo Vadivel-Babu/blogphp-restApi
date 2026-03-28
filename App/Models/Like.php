@@ -1,7 +1,6 @@
 <?php
 
-use App\Helpers\Response;
-use App\Models\Model;
+namespace App\Models;
 
 class Like extends Model
 {

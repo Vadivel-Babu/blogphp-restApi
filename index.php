@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 require 'App/autoload.php';
 
+use App\Controllers\LikeController;
 use App\Core\Router;
 
 $route = new Router();
@@ -19,10 +20,16 @@ $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
 
 // comments routes
 $route->get('/comments', 'CommentController@index', ['auth']);
-$route->post('/comments', 'CommentContoller@store', ['auth']);
+$route->post('/comments', 'CommentController@store', ['auth']);
+$route->put('/comments/{id}', 'CommentController@update', ['auth']);
+$route->delete('/comments/{id}', 'CommentController@delete', ['auth']);
+
+// like routes
+$route->get('/likes', 'LikeController@index', ['auth']);
+$route->post('/likes', 'LikeController@store', ['auth']);
 
 // user routes
 $route->post('/register', 'UserController@register', ['auth']);
 $route->post('/login', 'UserController@login', ['auth']);
-$route->post('/update', 'UserController@update', ['auth']);
+$route->post('/user/{id}', 'UserController@update', ['auth']);
 $route->dispatch();

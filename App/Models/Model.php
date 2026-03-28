@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Core\Database;
-use WpOrg\Requests\Response;
 use PDO;
 
 class Model
@@ -31,11 +30,37 @@ class Model
         $table = static::$table;
 
         $stmt = self::db()->prepare("SELECT * FROM $table WHERE id = :id");
+        $stmt2 = self::db()->prepare('SELECT * FROM comments WHERE postId = :id');
         $stmt->bindParam(':id', $id);
+        $stmt2->bindParam(':id', $id);
+        $stmt->execute();
+        $stmt2->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $comments = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+        return [$result, $comments];
+    }
+
+    public static function findByPostIdandUserId($postId, $userId)
+    {
+        $table = static::$table;
+
+        $stmt = self::db()->prepare("SELECT * FROM $table WHERE post_id = :postId AND user_id = :userId");
+        $stmt->bindParam(':postId', $postId);
+        $stmt->bindParam(':userId', $userId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result;
+    }
+
+    public static function countByComments($postId)
+    {
+        $table = static::$table;
+        $stmt = self::db()->prepare('SELECT * FROM comments WHERE postId = :id');
+        $stmt->bindParam(':id', $postId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public static function findByEmail($email)
@@ -75,7 +100,7 @@ class Model
         }
         $fields = rtrim($fields, ',');
 
-        $sql = "UPDATE $table SET $fields WHERE post_id = :id";
+        $sql = "UPDATE $table SET $fields WHERE id = :id";
         $data['id'] = $id;
 
         $stmt = self::db()->prepare($sql);
@@ -89,7 +114,7 @@ class Model
     {
         $table = static::$table;
 
-        $stmt = self::db()->prepare("DELETE FROM $table WHERE post_id = :id");
+        $stmt = self::db()->prepare("DELETE FROM $table WHERE id = :id");
 
         return $stmt->execute(['id' => $id]);
     }
