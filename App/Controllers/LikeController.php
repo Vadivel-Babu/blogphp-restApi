@@ -19,7 +19,7 @@ class LikeController
         $id = $data['id'] ?? null;
 
         if ($id) {
-            $isLiked = Like::find($id);
+            $isLiked = Like::findById($id);
             if (! $isLiked) {
                 $result = Like::create($data);
                 Response::json(['message' => 'post liked', 'data' => $result]);
@@ -29,6 +29,9 @@ class LikeController
                 $result = Like::update($id, $newData);
                 Response::json($result);
             }
+        } else {
+            $result = Like::create($data);
+            Response::json(['message' => 'post liked', 'data' => $result]);
         }
     }
 }
