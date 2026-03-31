@@ -67,11 +67,19 @@ class UserController
     {
         $data = file_get_contents('php://input');
         $name = $_POST['name'];
-        $pass = $_POST['password'];
-        $img = $_FILES['img'];
-        $data = ['name' => $name, '$pass' => "$pass", 'img' => $img];
-        $isValidate = Validate::validation($img, 'user update');
-        Response::json($data, 200);
+        $pass = $_POST['password'] ?? null;
+        $img = $_FILES['img'] ?? null;
+        // $data = ['name' => $name, '$pass' => "$pass", 'img' => $img];
+        if ($img) {
+            $isValidate = Validate::validation($img, 'img');
+            if ($isValidate['status']) {
+                Response::json(['data' => $isValidate['img']]);
+            } else {
+                Response::json($isValidate);
+            }
+        } else {
+            Response::json(['img not there'], 200);
+        }
     }
 
     public function logout()

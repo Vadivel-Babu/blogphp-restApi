@@ -31,8 +31,41 @@ class Validate
             }
 
             return ['status' => true];
-        } elseif ($validateType === 'user update') {
+        } elseif ($validateType === 'img') {
+            $uploadDir = 'app/uploads/';
+            $allowedExtensions = ['jpg', 'jpeg', 'png'];
+            $maxSize = 500 * 1024;
             $img = $data;
+            $fileName = basename($img['name']);
+            $fileSize = $img['size'];
+            $fileTmp = $img['tmp_name'];
+            $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            // 3. Validate Extension
+            if (! in_array($ext, $allowedExtensions)) {
+                return ['status' => false, 'message' => 'Only JPG, JPEG & PNG files are allowed.'];
+            }
+
+            // 4. Validate Size
+            if ($fileSize > $maxSize) {
+                return ['status' => false, 'message' => 'File size must be less than 500 KB.'];
+            }
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $fileTmp);
+
+            $allowedMime = ['image/jpeg', 'image/png'];
+            if (! in_array($mime, $allowedMime)) {
+                return ['status' => false, 'message' => ' Invalid image file.'];
+            }
+            $newFileName = uniqid('img_').'.'.$ext;
+            $destination = $uploadDir.$newFileName;
+            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'];
+            if (move_uploaded_file($fileTmp, $destination)) {
+                $imgUrl = "$protocol://$host/$destination";
+
+                return ['status' => true, 'img' => $imgUrl];
+            }
         }
     }
 }
