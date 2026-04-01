@@ -14,17 +14,32 @@ class Model
         return Database::connect();
     }
 
-    public static function all()
+    public static function all($search, $category)
     {
         $table = static::$table;
-
-        $stmt = self::db()->prepare("SELECT *, 
+        $sql = "SELECT *, 
         (SELECT COUNT(*) FROM comments c WHERE c.postId = p.id) AS total_comments, 
         (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id AND l.isLiked = 1) AS total_likes, 
         (SELECT name FROM users WHERE id = p.userId) AS author_name,
         (SELECT img FROM users WHERE id = p.userId) AS author_img,
-        (SELECT l.isLiked FROM likes l WHERE l.post_id = p.id AND l.user_id = 2 LIMIT 1) AS is_liked FROM $table p;");
-        $stmt->execute();
+        (SELECT l.isLiked FROM likes l WHERE l.post_id = p.id AND l.user_id = 2 LIMIT 1) AS is_liked 
+        FROM $table p WHERE 1=1";
+
+        $params = [];
+
+        if (! empty($category)) {
+            $sql .= ' AND category = :category';
+            $params['category'] = $category;
+        }
+
+        if (! empty($search)) {
+            $sql .= ' AND title LIKE :search';
+            $params['search'] = "%$search%";
+        }
+
+        $stmt = self::db()->prepare($sql);
+
+        $stmt->execute($params);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $result;

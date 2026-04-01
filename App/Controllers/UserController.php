@@ -10,8 +10,8 @@ class UserController
 {
     public function index()
     {
-        $users = User::all();
-        Response::json($users);
+        // $users = User::all();
+        Response::json([]);
     }
 
     public function show($id)

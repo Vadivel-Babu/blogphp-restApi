@@ -9,7 +9,9 @@ class PostController
 {
     public function index()
     {
-        $posts = Post::all();
+        $category = $_GET['category'] ?? '';
+        $search = $_GET['search'] ?? '';
+        $posts = Post::all($search, $category);
         Response::json($posts);
     }
 
