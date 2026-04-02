@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Helpers\Response;
 use App\Helpers\Validate;
 use App\Models\User;
+use App\Services\JwtService;
 
 class UserController
 {
@@ -55,7 +56,12 @@ class UserController
                 Response::json(['message' => 'user not found'], 404);
             } else {
                 if (password_verify($data['password'], $user['password'])) {
-                    Response::json(['message' => 'logged in succesfully']);
+                    $token = JwtService::generate($user);
+
+                    Response::json([
+                        'message' => 'Login successful',
+                        'token' => $token
+                    ]);
                 } else {
                     Response::json(['message' => 'invalid password'], 401);
                 }
@@ -65,7 +71,7 @@ class UserController
 
     public function update()
     {
-        $data = file_get_contents('php://input');
+        // $data = file_get_contents('php://input');
         $name = $_POST['name'];
         $email = $_POST['email'];
         $pass = $_POST['password'] ?? '';

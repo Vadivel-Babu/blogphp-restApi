@@ -3,26 +3,29 @@
 namespace App\middleware;
 
 use App\Helpers\Response;
+use App\Services\JwtService;
 
 class AuthMiddleware
 {
     public function auth()
     {
-        $token = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
 
-        if (! $token) {
+        if (! $auth) {
             Response::json([
                 'message' => 'Unauthorized'
             ], 401);
             exit;
         }
 
-        $token = explode(' ', $token)[1];
+        $token = str_replace('Bearer ', '', $auth);
 
-        if ($token !== '12345') {
-            Response::json([
-                'message' => 'Invalid token'
-            ], 401);
+        $decoded = JwtService::verify($token);
+
+        if (! $decoded) {
+            Response::json(['message' => 'Invalid or expired token'], 401);
         }
+
+        $_REQUEST['user'] = $decoded;
     }
 }

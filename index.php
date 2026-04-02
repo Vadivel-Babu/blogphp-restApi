@@ -1,8 +1,8 @@
 <?php
 ini_set('display_errors', 1);
 require 'App/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
-use App\Controllers\LikeController;
 use App\Core\Router;
 
 $route = new Router();
@@ -12,8 +12,8 @@ $route->get('/users', 'UserController@index', ['auth']);
 $route->get('/users/{id}', 'UserController@show', ['auth']);
 
 // posts routes
-$route->get('/posts', 'PostController@index', ['auth']);
-$route->get('/posts/{id}', 'PostController@show', ['auth']);
+$route->get('/posts', 'PostController@index', []);
+$route->get('/posts/{id}', 'PostController@show', []);
 $route->post('/posts', 'PostController@store', ['auth']);
 $route->put('/posts/{id}', 'PostController@update', ['auth']);
 $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
@@ -29,7 +29,7 @@ $route->get('/likes', 'LikeController@index', ['auth']);
 $route->post('/likes', 'LikeController@store', ['auth']);
 
 // user routes
-$route->post('/register', 'UserController@register', ['auth']);
-$route->post('/login', 'UserController@login', ['auth']);
+$route->post('/register', 'UserController@register', []);
+$route->post('/login', 'UserController@login', []);
 $route->post('/user/{id}', 'UserController@update', ['auth']);
 $route->dispatch();
