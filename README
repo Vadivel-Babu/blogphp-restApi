@@ -1,10 +1,10 @@
-# PHP Blog REST API 📘
+# PHP Blog REST API
 
 A lightweight **RESTful API built with core PHP (MVC architecture)** for managing blog posts, users, and authentication using JWT.
 
 ---
 
-## Features 🚀
+## Features
 
 - 🔐 JWT Authentication (Login / Register)
 - 👤 User Management
