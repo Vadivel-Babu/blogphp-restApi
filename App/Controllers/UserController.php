@@ -15,11 +15,11 @@ class UserController
         Response::json([]);
     }
 
-    public function show($id)
-    {
-        $user = User::find($id);
-        Response::json($user);
-    }
+    // public function show($id)
+    // {
+    //     $user = User::find($id);
+    //     Response::json($user);
+    // }
 
     public function register()
     {

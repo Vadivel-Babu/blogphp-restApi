@@ -13,8 +13,8 @@ $route->get('/users', 'UserController@index', ['auth']);
 $route->get('/users/{id}', 'UserController@show', ['auth']);
 
 // posts routes
-$route->get('/posts', 'PostController@index', []);
-$route->get('/posts/{id}', 'PostController@show', []);
+$route->get('/posts', 'PostController@index', ['auth']);
+$route->get('/posts/{id}', 'PostController@show', ['auth']);
 $route->post('/posts', 'PostController@store', ['auth']);
 $route->post('/posts/{id}', 'PostController@update', ['auth']);
 $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
