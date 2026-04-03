@@ -14,18 +14,19 @@ class Model
         return Database::connect();
     }
 
-    public static function all($search, $category)
+    public static function all($search, $category, $userId)
     {
         $table = static::$table;
         $sql = "SELECT *, 
         (SELECT COUNT(*) FROM comments c WHERE c.postId = p.id) AS total_comments, 
-        (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id AND l.isLiked = 1) AS total_likes, 
+        (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id ) AS total_likes, 
         (SELECT name FROM users WHERE id = p.userId) AS author_name,
         (SELECT img FROM users WHERE id = p.userId) AS author_img,
-        (SELECT l.isLiked FROM likes l WHERE l.post_id = p.id AND l.user_id = 2 LIMIT 1) AS is_liked 
+        EXISTS (SELECT * FROM likes l WHERE l.post_id = p.id AND l.user_id = :userId LIMIT 1) AS is_liked
         FROM $table p WHERE 1=1";
 
         $params = [];
+        $params['userId'] = $userId;
 
         if (! empty($category)) {
             $sql .= ' AND category = :category';
@@ -45,21 +46,24 @@ class Model
         return $result;
     }
 
-    public static function find($id)
+    public static function find($id, $userId)
     {
         $table = static::$table;
 
         $stmt = self::db()->prepare("SELECT *, 
         (SELECT COUNT(*) FROM comments c WHERE c.postId = p.id) AS total_comments, 
-        (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id AND l.isLiked = 1) AS total_likes, 
+        (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id) AS total_likes, 
         (SELECT name FROM users WHERE id = p.userId) AS author_name,
         (SELECT img FROM users WHERE id = p.userId) AS author_img,
-        (SELECT l.isLiked FROM likes l WHERE l.post_id = p.id AND l.user_id = 2 LIMIT 1) AS is_liked FROM $table p WHERE id = :id;");
-        $stmt2 = self::db()->prepare('SELECT c.id, c.content,  
+        EXISTS (SELECT * FROM likes l WHERE l.post_id = :id AND l.user_id = :userId LIMIT 1) AS is_liked
+        FROM $table p WHERE id = :id;");
+
+        $stmt2 = self::db()->prepare('SELECT c.id, c.content,
         (SELECT name FROM users WHERE id = c.userId) AS author_name,
-        (SELECT img FROM users WHERE id = c.userId) AS author_img  
+        (SELECT img FROM users WHERE id = c.userId) AS author_img
         FROM comments c WHERE postId = :id;');
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':userId', $userId);
         $stmt2->bindParam(':id', $id);
         $stmt->execute();
         $stmt2->execute();
@@ -69,12 +73,13 @@ class Model
         return ['post' => $result, 'comments' => $comments];
     }
 
-    public static function findById($id)
+    public static function isPostLiked($postId, $userId)
     {
         $table = static::$table;
 
-        $stmt = self::db()->prepare("SELECT * FROM $table WHERE id = :id");
-        $stmt->bindParam(':id', $id);
+        $stmt = self::db()->prepare("SELECT * FROM $table WHERE post_id = :post_id and user_id = :user_id");
+        $stmt->bindParam(':post_id', $postId);
+        $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

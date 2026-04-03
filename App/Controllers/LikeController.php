@@ -7,31 +7,20 @@ use App\Models\Like;
 
 class LikeController
 {
-    public function index()
-    {
-        $data = Like::all();
-        Response::json($data);
-    }
-
     public function store()
     {
         $data = json_decode(file_get_contents('php://input'), true);
-        $id = $data['id'] ?? null;
+        $postId = $data['postId'];
+        $userId = $data['userId'];
 
-        if ($id) {
-            $isLiked = Like::findById($id);
-            if (! $isLiked) {
-                $result = Like::create($data);
-                Response::json(['message' => 'post liked', 'data' => $result]);
-            } else {
-                $id = $data['id'];
-                $newData = array_diff_key($data, array('id' => true));
-                $result = Like::update($id, $newData);
-                Response::json($result);
-            }
-        } else {
+        $isLiked = Like::isPostLiked($postId, $userId);
+        if (! $isLiked) {
             $result = Like::create($data);
-            Response::json(['message' => 'post liked', 'data' => $result]);
+            Response::json(['message' => 'post liked'], 201);
+        } else {
+            $id = $isLiked['id'];
+            $result = Like::delete($id);
+            Response::json(['message' => 'post disliked'], 204);
         }
     }
 }

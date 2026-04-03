@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 ini_set('display_errors', 1);
 require 'App/autoload.php';
 require __DIR__.'/vendor/autoload.php';
@@ -15,7 +16,7 @@ $route->get('/users/{id}', 'UserController@show', ['auth']);
 $route->get('/posts', 'PostController@index', []);
 $route->get('/posts/{id}', 'PostController@show', []);
 $route->post('/posts', 'PostController@store', ['auth']);
-$route->put('/posts/{id}', 'PostController@update', ['auth']);
+$route->post('/posts/{id}', 'PostController@update', ['auth']);
 $route->delete('/posts/{id}', 'PostController@delete', ['auth']);
 
 // comments routes

@@ -10,24 +10,48 @@ class PostController
 {
     public function index()
     {
+        $user = $_REQUEST['user'] ?? null;
+        $userId = $user->user_id ?? null;
         $category = $_GET['category'] ?? '';
         $search = $_GET['search'] ?? '';
-        $posts = Post::all($search, $category);
+        $posts = Post::all($search, $category, $userId);
         Response::json($posts);
     }
 
     public function show($id)
     {
         $id = $id + 0;
-        $post = Post::find($id);
+        $user = $_REQUEST['user'] ?? null;
+        $userId = $user->user_id ?? null;
+        $post = Post::find($id, $userId);
         Response::json($post);
     }
 
     public function store()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $post = Post::create($data);
-        Response::json($post, 201);
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $category = $_POST['category'];
+        $img = $_FILES['img'] ?? null;
+        $userId = $_POST['userId'];
+        $data = ['title' => $title, 'content' => $content, 'category' => $category, 'userId' => $userId, 'img' => $img];
+        if ($img) {
+            $isValidate = Validate::validation($img, 'img');
+            if ($isValidate['status']) {
+                $data['img'] = $isValidate['img'];
+                $post = Post::create($data);
+                if ($post) {
+                    Response::json(['message' => 'post updated successfully'], 201);
+                } else {
+                    Response::json(['message' => 'failed post updated'], 400);
+                }
+            } else {
+                Response::json(['message' => $isValidate['message']], 400);
+            }
+        } else {
+            $post = Post::create($data);
+            Response::json($post, 201);
+        }
     }
 
     public function update($id)

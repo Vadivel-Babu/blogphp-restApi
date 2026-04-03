@@ -87,19 +87,19 @@ class UserController
                     Response::json([$isValidate['message']]);
                 }
             } else {
-                Response::json(['img not there'], 401);
+                Response::json(['img not there'], 400);
             }
             if (password_verify($pass, $user['password'])) {
                 $newPass = password_hash($newPass, PASSWORD_DEFAULT);
             } else {
-                Response::json(['message' => 'invalid password'], 401);
+                Response::json(['message' => 'invalid password'], 400);
             }
             $updatedData = ['name' => $name, 'email' => $email, 'password' => $newPass, 'img' => $img];
             $result = User::update($user['id'], $updatedData);
             if ($result) {
-                Response::json(['message' => 'user updated successfully'], 201);
+                Response::json(['message' => 'user updated successfully'], 204);
             } else {
-                Response::json(['message' => 'user not updated'], 401);
+                Response::json(['message' => 'user not updated'], 400);
             }
         } else {
             Response::json(['message' => 'user not found'], 404);
