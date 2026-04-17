@@ -27,7 +27,7 @@ class UserController
 
         $isValidate = Validate::validation($data, 'register');
         if (! $isValidate['status']) {
-            Response::json($isValidate);
+            Response::json($isValidate, 400);
         } else {
             $password = password_hash($data['password'], PASSWORD_DEFAULT);
             $data['password'] = $password;
@@ -48,7 +48,7 @@ class UserController
         $data = json_decode(file_get_contents('php://input'), true);
         $isValidate = Validate::validation($data, 'login');
         if (! $isValidate['status']) {
-            Response::json($isValidate);
+            Response::json($isValidate, 400);
         } else {
             $user = User::findByEmail($data['email']);
 
