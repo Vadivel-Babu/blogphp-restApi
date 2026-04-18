@@ -60,7 +60,8 @@ class UserController
 
                     Response::json([
                         'message' => 'Login successful',
-                        'token' => $token
+                        'token' => $token,
+                        'user' => ['name' => $user['name'], 'email' => $user['email'], 'img' => $user['img']]
                     ]);
                 } else {
                     Response::json(['message' => 'invalid password'], 401);

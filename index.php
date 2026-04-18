@@ -18,28 +18,28 @@ use App\Core\Router;
 $route = new Router();
 
 // users routes
-$route->get('api/users', 'UserController@index', ['auth']);
-$route->get('api/users/{id}', 'UserController@show', ['auth']);
+$route->get('/users', 'UserController@index', ['auth']);
+$route->get('/users/{id}', 'UserController@show', ['auth']);
 
 // posts routes
-$route->get('api/posts', 'PostController@index', ['auth']);
-$route->get('api/posts/{id}', 'PostController@show', ['auth']);
-$route->post('api/posts', 'PostController@store', ['auth']);
-$route->post('api/posts/{id}', 'PostController@update', ['auth']);
-$route->delete('api/posts/{id}', 'PostController@delete', ['auth']);
+$route->get('/posts', 'PostController@index', ['auth']);
+$route->get('/posts/{id}', 'PostController@show', ['auth']);
+$route->post('/posts', 'PostController@store', ['auth']);
+$route->post('/posts/{id}', 'PostController@update', ['auth']);
+$route->delete('/posts/{id}', 'PostController@delete', ['auth']);
 
 // comments routes
-$route->get('api/comments', 'CommentController@index', ['auth']);
-$route->post('api/comments', 'CommentController@store', ['auth']);
-$route->put('api/comments/{id}', 'CommentController@update', ['auth']);
-$route->delete('api/comments/{id}', 'CommentController@delete', ['auth']);
+$route->get('/comments', 'CommentController@index', ['auth']);
+$route->post('/comments', 'CommentController@store', ['auth']);
+$route->put('/comments/{id}', 'CommentController@update', ['auth']);
+$route->delete('/comments/{id}', 'CommentController@delete', ['auth']);
 
 // like routes
-$route->get('api/likes', 'LikeController@index', ['auth']);
-$route->post('api/likes', 'LikeController@store', ['auth']);
+$route->get('/likes', 'LikeController@index', ['auth']);
+$route->post('/likes', 'LikeController@store', ['auth']);
 
 // user routes
-$route->post('api/register', 'UserController@register', []);
-$route->post('api/login', 'UserController@login', []);
-$route->post('api/user/{id}', 'UserController@update', ['auth']);
+$route->post('/register', 'UserController@register', []);
+$route->post('/login', 'UserController@login', []);
+$route->post('/user/{id}', 'UserController@update', ['auth']);
 $route->dispatch();
