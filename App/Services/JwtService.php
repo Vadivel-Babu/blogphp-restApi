@@ -14,7 +14,7 @@ class JwtService
         $payload = [
             'iss' => 'blog-api',
             'iat' => time(),
-            'exp' => time() + 3600,
+            'exp' => time() + (2 * 3600),
             'user_id' => $user['id'],
             'email' => $user['email']
         ];
