@@ -58,7 +58,7 @@ class Model
         EXISTS (SELECT * FROM likes l WHERE l.post_id = :id AND l.user_id = :userId LIMIT 1) AS is_liked
         FROM $table p WHERE id = :id;");
 
-        $stmt2 = self::db()->prepare('SELECT c.id, c.content,
+        $stmt2 = self::db()->prepare('SELECT *,
         (SELECT name FROM users WHERE id = c.userId) AS author_name,
         (SELECT img FROM users WHERE id = c.userId) AS author_img
         FROM comments c WHERE postId = :id;');
