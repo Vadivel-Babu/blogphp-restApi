@@ -56,6 +56,7 @@ class PostController
 
     public function update($id)
     {
+        echo $id;
         $id = $id + 0;
         // Response::json($id);
         // $data = json_decode(file_get_contents('php://input'), true);
@@ -77,6 +78,16 @@ class PostController
                 }
             } else {
                 Response::json(['message' => $isValidate['message']], 400);
+            }
+        } else {
+            if (! $title || ! $content || ! $category || ! $userId) {
+                Response::json(['message' => 'failed to update the post'], 400);
+            }
+            $update = Post::update($id, $data);
+            if ($update) {
+                Response::json(['message' => 'post updated successfully'], 201);
+            } else {
+                Response::json(['message' => 'failed to update the post'], 400);
             }
         }
     }
