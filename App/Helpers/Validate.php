@@ -34,7 +34,7 @@ class Validate
         } elseif ($validateType === 'img') {
             $uploadDir = 'app/uploads/';
             $allowedExtensions = ['jpg', 'jpeg', 'png'];
-            $maxSize = 500 * 1024;
+            $maxSize = 2 * 1024 * 1024;;
             $img = $data;
             $fileName = basename($img['name']);
             $fileSize = $img['size'];

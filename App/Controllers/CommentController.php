@@ -11,7 +11,11 @@ class CommentController
     {
         $data = json_decode(file_get_contents('php://input'), true);
         $result = Comment::create($data);
-        Response::json(['message' => 'created'], 201);
+        if ($result) {
+            Response::json(['message' => 'commented successfully'], 201);
+        } else {
+            Response::json(['message' => 'something went wrong'], 400);
+        }
     }
 
     public function update($id)
@@ -19,12 +23,20 @@ class CommentController
         $id = $id + 0;
         $data = json_decode(file_get_contents('php://input'), true);
         $result = Comment::update($id, $data);
-        Response::json(['message' => 'updated'], 204);
+        if ($result) {
+            Response::json(['message' => 'comment updated successfully'], 204);
+        } else {
+            Response::json(['message' => 'something went wrong'], 400);
+        }
     }
 
     public function delete($id)
     {
         $result = Comment::delete($id);
-        Response::json(['message' => 'deleted'], 204);
+        if ($result) {
+            Response::json(['message' => 'comment deleted successfully'], 204);
+        } else {
+            Response::json(['message' => 'something went wrong'], 400);
+        }
     }
 }

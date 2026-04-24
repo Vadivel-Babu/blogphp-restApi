@@ -35,6 +35,7 @@ class PostController
         $img = $_FILES['img'] ?? null;
         $userId = $_POST['userId'];
         $data = ['title' => $title, 'content' => $content, 'category' => $category, 'userId' => $userId, 'img' => $img];
+        var_dump($data);
         if ($img) {
             $isValidate = Validate::validation($img, 'img');
             if ($isValidate['status']) {
@@ -49,8 +50,15 @@ class PostController
                 Response::json(['message' => $isValidate['message']], 400);
             }
         } else {
+            if (! $title || ! $content || ! $category || ! $userId) {
+                Response::json(['message' => 'failed to update the post'], 400);
+            }
             $post = Post::create($data);
-            Response::json($post, 201);
+            if ($post) {
+                Response::json(['message' => 'post updated successfully'], 201);
+            } else {
+                Response::json(['message' => 'failed to update the post'], 400);
+            }
         }
     }
 
