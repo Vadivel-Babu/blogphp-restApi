@@ -141,4 +141,30 @@ class Model
 
         return $stmt->execute(['id' => $id]);
     }
+
+    public static function deleteCommentsAndLikeByPostId($id)
+    {
+        $db = self::db();
+        $table = static::$table;
+
+        try {
+            $db->beginTransaction();
+
+            $stmt1 = $db->prepare('DELETE FROM likes WHERE post_id = :id');
+            $stmt1->execute(['id' => $id]);
+
+            $stmt2 = $db->prepare('DELETE FROM comments WHERE postId = :id');
+            $stmt2->execute(['id' => $id]);
+
+            $stmt3 = $db->prepare("DELETE FROM $table WHERE id = :id");
+            $stmt3->execute(['id' => $id]);
+
+            $db->commit();
+
+            return true;
+        } catch (\Throwable $e) {
+            $db->rollBack();
+            throw $e;
+        }
+    }
 }

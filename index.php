@@ -35,7 +35,6 @@ $route->put('/comments/{id}', 'CommentController@update', ['auth']);
 $route->delete('/comments/{id}', 'CommentController@delete', ['auth']);
 
 // like routes
-$route->get('/likes', 'LikeController@index', ['auth']);
 $route->post('/likes', 'LikeController@store', ['auth']);
 
 // user routes

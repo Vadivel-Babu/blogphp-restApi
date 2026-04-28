@@ -15,12 +15,15 @@ class LikeController
 
         $isLiked = Like::isPostLiked($postId, $userId);
         if (! $isLiked) {
+            $data = ['post_id' => $postId, 'user_id' => $userId];
             $result = Like::create($data);
             Response::json(['message' => 'post liked'], 201);
-        } else {
+        } else if ($isLiked) {
             $id = $isLiked['id'];
             $result = Like::delete($id);
             Response::json(['message' => 'post disliked'], 204);
+        } else {
+            Response::json(['message' => 'somthing went wrong'], 400);
         }
     }
 }

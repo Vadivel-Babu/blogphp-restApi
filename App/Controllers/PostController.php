@@ -103,7 +103,11 @@ class PostController
     public function delete($id)
     {
         $id = $id + 0;
-        $deleted = Post::delete($id);
-        Response::json($deleted);
+        $deleted = Post::deleteCommentsAndLikeByPostId($id);
+        if ($deleted) {
+            Response::json(['message' => 'post deleted successfully'], 200);
+        } else {
+            Response::json(['message' => 'failed to delete the post'], 400);
+        }
     }
 }
