@@ -75,8 +75,8 @@ class UserController
         // $data = file_get_contents('php://input');
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $pass = $_POST['password'] ?? '';
-        $newPass = $_POST['newpassword'] ?? '';
+        $pass = $_POST['password'] ?: '';
+        $newPass = $_POST['newpassword'] ?: '';
         $img = $_FILES['img'] ?? null;
         $user = User::findByEmail($email);
         if ($user) {
@@ -87,8 +87,6 @@ class UserController
                 } else {
                     Response::json([$isValidate['message']]);
                 }
-            } else {
-                Response::json(['img not there'], 400);
             }
             if (password_verify($pass, $user['password'])) {
                 $newPass = password_hash($newPass, PASSWORD_DEFAULT);
@@ -96,11 +94,16 @@ class UserController
                 Response::json(['message' => 'invalid password'], 400);
             }
             $updatedData = ['name' => $name, 'email' => $email, 'password' => $newPass, 'img' => $img];
-            $result = User::update($user['id'], $updatedData);
-            if ($result) {
-                Response::json(['message' => 'user updated successfully'], 204);
-            } else {
-                Response::json(['message' => 'user not updated'], 400);
+            if ($newPass) {
+                $result = User::update($user['id'], $updatedData);
+                if ($result) {
+                    Response::json(['message' => 'password updated successfully'], 204);
+                }
+            } elseif (! $newPass) {
+                $result = User::update($user['id'], $updatedData);
+                if ($result) {
+                    Response::json(['message' => 'user updated successfully'], 204);
+                }
             }
         } else {
             Response::json(['message' => 'user not found'], 404);
