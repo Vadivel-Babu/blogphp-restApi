@@ -23,7 +23,7 @@ class Model
         (SELECT name FROM users WHERE id = p.userId) AS author_name,
         (SELECT img FROM users WHERE id = p.userId) AS author_img,
         EXISTS (SELECT * FROM likes l WHERE l.post_id = p.id AND l.user_id = :userId LIMIT 1) AS is_liked
-        FROM $table p WHERE 1=1";
+        FROM $table p WHERE 1=1 ";
 
         $params = [];
         $params['userId'] = $userId;
@@ -37,6 +37,7 @@ class Model
             $sql .= ' AND title LIKE :search';
             $params['search'] = "%$search%";
         }
+        $sql .= ' ORDER BY id DESC';
 
         $stmt = self::db()->prepare($sql);
 

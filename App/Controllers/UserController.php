@@ -75,8 +75,8 @@ class UserController
         // $data = file_get_contents('php://input');
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $pass = $_POST['password'] ?: '';
-        $newPass = $_POST['newpassword'] ?: '';
+        // $pass = $_POST['password'] ?: '';
+        // $newPass = $_POST['newpassword'] ?: '';
         $img = $_FILES['img'] ?? null;
         $user = User::findByEmail($email);
         if ($user) {
@@ -88,22 +88,20 @@ class UserController
                     Response::json([$isValidate['message']]);
                 }
             }
-            if (password_verify($pass, $user['password'])) {
-                $newPass = password_hash($newPass, PASSWORD_DEFAULT);
+            // if ($pass ) {
+            //     if (password_verify($pass, $user['password'])) {
+            //         $newPass = password_hash($newPass, PASSWORD_DEFAULT);
+            //     } else {
+            //         Response::json(['message' => 'invalid password'], 400);
+            //     }
+            // }
+
+            $updatedData = ['name' => $name, 'email' => $email, 'img' => $img];
+            $result = User::update($user['id'], $updatedData);
+            if ($result) {
+                Response::json(['message' => 'userupdated successfully'], 204);
             } else {
-                Response::json(['message' => 'invalid password'], 400);
-            }
-            $updatedData = ['name' => $name, 'email' => $email, 'password' => $newPass, 'img' => $img];
-            if ($newPass) {
-                $result = User::update($user['id'], $updatedData);
-                if ($result) {
-                    Response::json(['message' => 'password updated successfully'], 204);
-                }
-            } elseif (! $newPass) {
-                $result = User::update($user['id'], $updatedData);
-                if ($result) {
-                    Response::json(['message' => 'user updated successfully'], 204);
-                }
+                Response::json(['message' => 'user not updated successfully'], 400);
             }
         } else {
             Response::json(['message' => 'user not found'], 404);
